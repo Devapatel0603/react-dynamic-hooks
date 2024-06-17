@@ -11,7 +11,7 @@
     -   [useCookieState](#useCookieState)
     -   [useSessionStorageState](#useSessionStorageState)
     -   [useLocalStorageState](#useLocalStorageState)
--   [Licence](#licence)
+-   [License](#license)
 -   [Author](#author)
 
 ## Installation
