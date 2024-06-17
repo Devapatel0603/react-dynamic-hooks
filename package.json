@@ -1,6 +1,6 @@
 {
   "name": "react-infinity-hooks",
-  "version": "1.0.0",
+  "version": "1.0.10",
   "description": "'react-infinity-hooks' is a set of React hooks for handling infinite scrolling, cookie state management, and storage state management (session and local storage). These hooks aim to simplify common tasks in React applications",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -35,5 +35,9 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Devapatel0603/react-infinity-hooks.git"
+  }
 }

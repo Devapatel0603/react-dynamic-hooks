@@ -50,12 +50,12 @@ This hook takes care of infinite scrolling logic, allowing you to focus on rende
 
 ```javascript
 import React, { useRef, useState } from "react";
-import { useInfinityScroller } from "infinity-scroller";
+import { useInfinityScroller } from "react-infinity-hooks";
 
 const MyComponent = () => {
     const [data, setData] = useState([]);
     const [page, setPage] = useState(1);
-    const scrollContainerRef = useRef(null);
+    const containerRef = useRef(null);
 
     const fetchData = async (page) => {
         // Ensure to pass the "page" parameter (you can name it as you like) to fetch the corresponding data.
@@ -74,7 +74,7 @@ const MyComponent = () => {
     };
 
     const { isLoading, hasMore } = useInfinityScroller(
-        scrollContainerRef,
+        containerRef,
         setData,
         fetchData,
         page,
@@ -160,13 +160,13 @@ const MyComponent = () => {
 
     return (
         <>
-            {token && token.length !== 0 ? (
+            {token !== "null" /*In cookies only string values are allowed*/ (
                 <>
-                    <h1>User is Logged in</h1>
+                    <h1>User is logged in</h1>
                 </>
             ) : (
                 <>
-                    <h1>Please Login</h1>
+                    <h1>Please login</h1>
                 </>
             )}
         </>
