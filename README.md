@@ -1,6 +1,6 @@
-# React Infinity Hooks
+# React Dynamic Hooks
 
-`react-infinity-hooks` is a set of React hooks for handling infinite scrolling, cookie state management, and storage state management (session and local storage). These hooks aim to simplify common tasks in React applications.
+`react-dynamic-hooks` is a set of React hooks for handling infinite scrolling, cookie state management, and storage state management (session and local storage). These hooks aim to simplify common tasks in React applications.
 
 ## Table Content
 
@@ -19,13 +19,13 @@
 Install the package using npm or yarn:
 
 ```bash
-npm install react-infinity-hooks
+npm install react-dynamic-hooks
 ```
 
 or
 
 ```bash
-yarn add react-infinity-hooks
+yarn add react-dynamic-hooks
 ```
 
 ## Hooks
@@ -50,7 +50,7 @@ This hook takes care of infinite scrolling logic, allowing you to focus on rende
 
 ```javascript
 import React, { useRef, useState } from "react";
-import { useInfinityScroller } from "react-infinity-hooks";
+import { useInfinityScroller } from "react-dynamic-hooks";
 
 const MyComponent = () => {
     const [data, setData] = useState([]);
@@ -127,7 +127,7 @@ A hook for using asynchronous functions in `useEffect`. This hook is similar to 
 -   `deps` : Dependency array (Optional) (default : [] )
 
 ```javascript
-import { useAsyncEffect } from "react-infinity-hooks";
+import { useAsyncEffect } from "react-dynamic-hooks";
 
 const ExampleComponent = () => {
     useAsyncEffect(async () => {
@@ -153,7 +153,7 @@ const ExampleComponent = () => {
 -   `state` : The current value of the cookie
 
 ```javascript
-import { useCookieState } from "react-infinity-hooks";
+import { useCookieState } from "react-dynamic-hooks";
 
 const MyComponent = () => {
     const token = useCookieState("authToken", null); //If cookie not exist then set to null
@@ -178,7 +178,7 @@ There is also two additional functions for your convenience :
 
 ### `setCookie`
 
-**Parameters :**\
+**Parameters :**
 
 -   `name` : The name of the cookie
 -   `value` : Value of the cookie
@@ -216,7 +216,7 @@ getCookie("authToken");
 -   `state` : The current value of the key in localstorage
 
 ```javascript
-import { useLocalStorageState } from "react-infinity-hooks";
+import { useLocalStorageState } from "react-dynamic-hooks";
 
 const MyComponent = () => {
     const theme = useLocalStorageState("theme", 'light'); //If theme not exist then set to light
@@ -245,7 +245,7 @@ const MyComponent = () => {
 -   `state` : The current value of the key in session storage
 
 ```javascript
-import { useSessionStorageState } from "react-infinity-hooks";
+import { useSessionStorageState } from "react-dynamic-hooks";
 
 const MyComponent = () => {
     const theme = useSessionStorageState("theme", 'light'); //If theme not exist then set to light
@@ -262,7 +262,7 @@ const MyComponent = () => {
 
 ## License
 
-[MIT](https://github.com/Devapatel0603/react-infinity-hooks/blob/main/LICENCE)
+[MIT](https://github.com/Devapatel0603/react-dynamic-hooks/blob/main/LICENCE)
 
 ## Authors
 
