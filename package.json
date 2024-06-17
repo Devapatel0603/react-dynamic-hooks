@@ -1,0 +1,39 @@
+{
+  "name": "react-infinity-hooks",
+  "version": "1.0.0",
+  "description": "'react-infinity-hooks' is a set of React hooks for handling infinite scrolling, cookie state management, and storage state management (session and local storage). These hooks aim to simplify common tasks in React applications",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "keywords": [
+    "react",
+    "hooks",
+    "react-infinity-hooks",
+    "infinite-scrolling",
+    "cookie-state",
+    "storage-state",
+    "session-storage",
+    "local-storage"
+  ],
+  "author": "Dev Patel",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.24.7",
+    "@babel/preset-react": "^7.24.7",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.18.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
