@@ -160,7 +160,7 @@ const MyComponent = () => {
 
     return (
         <>
-            {token !== "null" /*In cookies only string values are allowed*/ (
+            {!token ? (
                 <>
                     <h1>User is logged in</h1>
                 </>
@@ -231,7 +231,7 @@ const MyComponent = () => {
 };
 ```
 
-## **_`useSessionStorageState`_**
+### **_`useSessionStorageState`_**
 
 `useSessionStorageState` behaves like `useState` for session storage. It retrieves a value from session storage based on a key, and automatically updates your component's state when the value changes. This allows your component to stay in sync with session storage data.
 
