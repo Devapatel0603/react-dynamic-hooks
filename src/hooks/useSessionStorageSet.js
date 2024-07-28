@@ -31,4 +31,3 @@ const useSessionStorageState = (key, defaultValue) => {
 
     return state;
 };
-export { useSessionStorageState };

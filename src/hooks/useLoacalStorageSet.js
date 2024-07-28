@@ -1,37 +1,41 @@
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 
-const useLocalStorageState = (key, defaultValue = null) => {
-    if (!key) {
-        throw new Error("Key is required");
-    }
+export function useLocalStorageState(key, defaultValue) {
+    return useStorage(key, defaultValue, window.localStorage);
+}
 
-    const [state, setState] = useState(() => {
-        const value = localStorage.getItem(key);
-        if (!value) {
-            if (typeof defaultValue === "object") {
-                defaultValue = JSON.stringify(value);
+export function useSessionStorageState(key, defaultValue) {
+    return useStorage(key, defaultValue, window.sessionStorage);
+}
+
+function useStorage(key, defaultValue, storageObject) {
+    const [value, setValue] = useState(() => {
+        const jsonValue = storageObject.getItem(key);
+        if (jsonValue != null) {
+            try {
+                return JSON.parse(jsonValue);
+            } catch (error) {
+                return jsonValue;
             }
-            localStorage.setItem(key, defaultValue);
         }
-        try {
-            return JSON.parse(value) || defaultValue;
-        } catch (error) {
+
+        if (typeof defaultValue === "function") {
+            return defaultValue();
+        } else {
             return defaultValue;
         }
     });
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            const newValue = localStorage.getItem(key);
-            if (newValue !== state) {
-                setState(newValue);
-            }
-        }, 700);
+        if (value === undefined) {
+            return storageObject.removeItem(key);
+        }
+        if (typeof value === "object") {
+            storageObject.setItem(key, JSON.stringify(value));
+        } else {
+            storageObject.setItem(key, value);
+        }
+    }, [key, value, storageObject]);
 
-        return () => clearInterval(intervalId);
-    }, [state]);
-
-    return state;
-};
-
-export { useLocalStorageState };
+    return [value, setValue];
+}

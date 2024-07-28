@@ -97,18 +97,63 @@ const useInfinityScroller = (
 };
 
 const useAsyncEffect = (effect, deps = []) => {
-    if (!effect) {
-        throw new Error("useAsyncEffect: function is required");
+    if (typeof effect !== "function") {
+        throw new Error("useAsyncEffect: effect must be a function");
     }
+
     useEffect(() => {
-        (async () => {
+        const executeEffect = async () => {
             try {
                 await effect();
             } catch (error) {
-                console.error(error);
+                console.error("Error in useAsyncEffect:", error);
             }
-        })();
+        };
+
+        executeEffect();
+        return undefined;
     }, deps);
+};
+
+const useCopyToClipboard = async (text) => {
+    try {
+        await navigator.clipboard.writeText(text);
+        return true;
+    } catch (err) {
+        console.error("Failed to copy text:", err);
+        return false;
+    }
+};
+
+const useGeolocation = (options = {}) => {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState();
+    const [data, setData] = useState({});
+
+    useEffect(() => {
+        const successHandler = (position) => {
+            setLoading(false);
+            setError(null);
+            setData(position.coords);
+        };
+        const errorHandler = (error) => {
+            setLoading(false);
+            setError(error);
+        };
+        navigator.geolocation.getCurrentPosition(
+            successHandler,
+            errorHandler,
+            options
+        );
+        const id = navigator.geolocation.watchPosition(
+            successHandler,
+            errorHandler,
+            options
+        );
+        return () => navigator.geolocation.clearWatch(id);
+    }, [options]);
+
+    return { loading, error, data };
 };
 
 const getCookie = (name) => {
@@ -194,84 +239,52 @@ const useCookieState = (key, defaultValue = null, options = {}) => {
         return value ?? defaultValue;
     });
 
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            const newValue = getCookie(key);
-            if (newValue !== state) {
-                setState(newValue);
-            }
-        }, 700);
+    const updateState = (newValue, options = {}) => {
+        setCookie(key, newValue, options);
+        setState(newValue);
+    };
 
-        return () => clearInterval(intervalId);
-    }, [key, state]);
-
-    return state;
+    return [state, updateState];
 };
 
-const useSessionStorageState = (key, defaultValue) => {
-    if (!key || !defaultValue) {
-        throw new Error("Key and default value are required");
-    }
-    useState(null);
+function useLocalStorageState(key, defaultValue) {
+    return useStorage(key, defaultValue, window.localStorage);
+}
 
-    const [state, setState] = useState(() => {
-        const value = sessionStorage.getItem(key);
-        if (!value) {
-            sessionStorage.setItem(key, defaultValue);
+function useSessionStorageState(key, defaultValue) {
+    return useStorage(key, defaultValue, window.sessionStorage);
+}
+
+function useStorage(key, defaultValue, storageObject) {
+    const [value, setValue] = useState(() => {
+        const jsonValue = storageObject.getItem(key);
+        if (jsonValue != null) {
+            try {
+                return JSON.parse(jsonValue);
+            } catch (error) {
+                return jsonValue;
+            }
         }
-        try {
-            return JSON.parse(value) || defaultValue;
-        } catch (error) {
+
+        if (typeof defaultValue === "function") {
+            return defaultValue();
+        } else {
             return defaultValue;
         }
     });
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            const newValue = sessionStorage.getItem(key);
-            if (newValue !== state) {
-                setState(newValue);
-            }
-        }, 700);
-
-        return () => clearInterval(intervalId);
-    }, [state]);
-
-    return state;
-};
-
-const useLocalStorageState = (key, defaultValue = null) => {
-    if (!key) {
-        throw new Error("Key is required");
-    }
-
-    const [state, setState] = useState(() => {
-        const value = localStorage.getItem(key);
-        if (!value) {
-            if (typeof defaultValue === "object") {
-                defaultValue = JSON.stringify(value);
-            }
-            localStorage.setItem(key, defaultValue);
+        if (value === undefined) {
+            return storageObject.removeItem(key);
         }
-        try {
-            return JSON.parse(value) || defaultValue;
-        } catch (error) {
-            return defaultValue;
+        if (typeof value === "object") {
+            storageObject.setItem(key, JSON.stringify(value));
+        } else {
+            storageObject.setItem(key, value);
         }
-    });
+    }, [key, value, storageObject]);
 
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            const newValue = localStorage.getItem(key);
-            if (newValue !== state) {
-                setState(newValue);
-            }
-        }, 700);
+    return [value, setValue];
+}
 
-        return () => clearInterval(intervalId);
-    }, [state]);
-
-    return state;
-};
-
-export { getCookie, setCookie, useAsyncEffect, useCookieState, useInfinityScroller, useLocalStorageState, useSessionStorageState };
+export { getCookie, setCookie, useAsyncEffect, useCookieState, useCopyToClipboard, useGeolocation, useInfinityScroller, useLocalStorageState, useSessionStorageState };

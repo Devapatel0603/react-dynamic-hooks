@@ -1,17 +1,21 @@
 import { useEffect } from "react";
 
 const useAsyncEffect = (effect, deps = []) => {
-    if (!effect) {
-        throw new Error("useAsyncEffect: function is required");
+    if (typeof effect !== "function") {
+        throw new Error("useAsyncEffect: effect must be a function");
     }
+
     useEffect(() => {
-        (async () => {
+        const executeEffect = async () => {
             try {
                 await effect();
             } catch (error) {
-                console.error(error);
+                console.error("Error in useAsyncEffect:", error);
             }
-        })();
+        };
+
+        executeEffect();
+        return undefined;
     }, deps);
 };
 

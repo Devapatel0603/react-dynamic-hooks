@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const getCookie = (name) => {
     const cookies = document.cookie;
@@ -83,18 +83,42 @@ const useCookieState = (key, defaultValue = null, options = {}) => {
         return value ?? defaultValue;
     });
 
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            const newValue = getCookie(key);
-            if (newValue !== state) {
-                setState(newValue);
-            }
-        }, 700);
+    const updateState = (newValue, options = {}) => {
+        setCookie(key, newValue, options);
+        setState(newValue);
+    };
 
-        return () => clearInterval(intervalId);
-    }, [key, state]);
-
-    return state;
+    return [state, updateState];
 };
+
+// const useCookieState = (key, defaultValue = null, options = {}) => {
+//     if (!key) {
+//         throw new Error("Key is required");
+//     }
+
+//     const [state, setState] = useState(() => {
+//         const value = getCookie(key);
+//         if (!value) {
+//             if (!options.skipCreation) {
+//                 const { skipCreation, ...newOptions } = options;
+//                 setCookie(key, defaultValue, newOptions);
+//             }
+//         }
+//         return value ?? defaultValue;
+//     });
+
+//     useEffect(() => {
+//         const intervalId = setInterval(() => {
+//             const newValue = getCookie(key);
+//             if (newValue !== state) {
+//                 setState(newValue);
+//             }
+//         }, 700);
+
+//         return () => clearInterval(intervalId);
+//     }, [key, state]);
+
+//     return state;
+// };
 
 export { useCookieState, setCookie, getCookie };

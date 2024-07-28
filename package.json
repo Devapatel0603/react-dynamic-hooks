@@ -1,7 +1,7 @@
 {
   "name": "react-dynamic-hooks",
-  "version": "1.0.2",
-  "description": "'react-dynamic-hooks' is a set of React hooks for handling infinite scrolling, cookie state management, and storage state management (session and local storage). These hooks aim to simplify common tasks in React applications",
+  "version": "1.0.3",
+  "description": "'react-dynamic-hooks' is a set of React hooks designed to handle infinite scrolling, manage cookie state, manage storage state (both session and local storage), retrieve user location, and copy text to the clipboard. These hooks aim to simplify common tasks in React applications.",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "type": "module",

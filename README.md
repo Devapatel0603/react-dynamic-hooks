@@ -1,6 +1,6 @@
 # React Dynamic Hooks
 
-`react-dynamic-hooks` is a set of React hooks for handling infinite scrolling, cookie state management, and storage state management (session and local storage). These hooks aim to simplify common tasks in React applications.
+`react-dynamic-hooks` is a set of React hooks for handling infinite scrolling, cookie state management, storage state management (session and local storage), geolocation, and clipboard copying. These hooks aim to simplify common tasks in React applications.
 
 ## Table Content
 
@@ -9,6 +9,8 @@
     -   [useInfinityScroller](#useInfinityScroller)
     -   [useAsyncEffect](#useAsyncEffect)
     -   [useCookieState](#useCookieState)
+    -   [useGeolocation](#useGeolocation)
+    -   [useCopyToClipboard](#useCopyToClipboard)
     -   [useSessionStorageState](#useSessionStorageState)
     -   [useLocalStorageState](#useLocalStorageState)
 -   [License](#license)
@@ -141,22 +143,22 @@ const ExampleComponent = () => {
 
 ### **_`useCookieState`_**
 
-`useCookieState` acts like `useState` for cookies. It retrieves a cookie's value and automatically updates your component's state when the cookie changes, allowing you to react to cookie modifications in your React components.
+`useCookieState` acts like `useState` for cookies. It returns a funtion to update that cookie state.
 
 **Parameters :**
 
 -   `key` : The name of the cookie
--   `defaultValue` : The initial value to use if the cookie doesn't exist.
+-   `defaultValue` : The initial value to use if the cookie doesn't exist. It's optional.
 
 **Returns :**
 
--   `state` : The current value of the cookie
+-   `[value, setValue]` : The current value and a function to update that cookie.
 
 ```javascript
 import { useCookieState } from "react-dynamic-hooks";
 
 const MyComponent = () => {
-    const token = useCookieState("authToken", null); //If cookie not exist then set to null
+    const [token, setToken] = useCookieState("authToken", null); //If cookie not exist then set to null
 
     return (
         <>
@@ -202,6 +204,90 @@ setCookie("authToken", token);
 getCookie("authToken");
 ```
 
+### **_`useCopyToClipboard`_**
+
+A hook for copying text to the clipboard.
+
+**Parameters :**
+
+-   `text` : The text you want to copy to the clipboard.
+
+**Returns :**
+
+-   `Promise<boolean>` : A promise that resolves to `true` if the text was successfully copied, otherwise `false`.
+
+```javascript
+import React, { useState } from "react";
+import { useCopyToClipboard } from "react-dynamic-hooks";
+
+const CopyTextComponent = () => {
+    const [text, setText] = useState("");
+    const [copyStatus, setCopyStatus] = useState(null);
+
+    const handleCopy = async () => {
+        const result = await useCopyToClipboard(text);
+        setCopyStatus(result ? "Copied!" : "Failed to copy.");
+    };
+
+    return (
+        <div>
+            <input
+                type="text"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Enter text to copy"
+            />
+            <button onClick={handleCopy}>Copy to Clipboard</button>
+            {copyStatus && <p>{copyStatus}</p>}
+        </div>
+    );
+};
+
+export default CopyTextComponent;
+```
+
+### **_`useGeolocation`_**
+
+`useGeolocation` is a custom React hook for accessing the user's geolocation. It handles obtaining and watching the user's position, managing loading state, and handling errors.
+
+**Parameters :**
+
+-   `options` (optional): An object with options for the geolocation API. These options can include:
+    -   `enableHighAccuracy`: A boolean indicating whether to request the most accurate location possible. Default is `false`.
+    -   `timeout`: The maximum length of time (in milliseconds) the device is allowed to take in order to return a position. Default is `Infinity`.
+    -   `maximumAge`: The maximum age (in milliseconds) of a possible cached position that is acceptable to return. Default is `0`.
+
+**Returns :**
+
+-   `loading`: A boolean indicating whether the geolocation data is still being fetched.
+-   `error`: An error object if there was an error while fetching the geolocation data.
+-   `data`: An object containing the geolocation coordinates (`latitude`, `longitude`, etc.) of the user.
+
+```javascript
+import React from "react";
+import { useGeolocation } from "react-dynamic-hooks";
+
+const GeolocationComponent = () => {
+    const { loading, error, data } = useGeolocation({
+        enableHighAccuracy: true,
+    });
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
+
+    return (
+        <div>
+            <h1>User Location</h1>
+            <p>Latitude: {data.latitude}</p>
+            <p>Longitude: {data.longitude}</p>
+            <p>Accuracy: {data.accuracy} meters</p>
+        </div>
+    );
+};
+
+export default GeolocationComponent;
+```
+
 ### **_`useLocalStorageState`_**
 
 `useLocalStorageState` behaves like `useState` for local storage. It retrieves a value from local storage based on a key, and automatically updates your component's state when the value changes. This allows your component to stay in sync with local storage data.
@@ -209,17 +295,17 @@ getCookie("authToken");
 **Parameters :**
 
 -   `key` : The name of the key in localstorage
--   `defaultValue` : The initial value to use if the key doesn't exist in localstorage
+-   `defaultValue` : The initial value to use if the key doesn't exist in localstorage. It's optional.
 
 **Returns :**
 
--   `state` : The current value of the key in localstorage
+-   `[value, setValue]` : The current value and a function to update that localstorage item.
 
 ```javascript
 import { useLocalStorageState } from "react-dynamic-hooks";
 
 const MyComponent = () => {
-    const theme = useLocalStorageState("theme", 'light'); //If theme not exist then set to light
+    const [theme, setTheme] = useLocalStorageState("theme", 'light'); //If theme not exist then set to light
 
     return (
         <>
@@ -242,13 +328,13 @@ const MyComponent = () => {
 
 **Returns :**
 
--   `state` : The current value of the key in session storage
+-   `[value, setValue]` : The current value and a function to update that session storage item.
 
 ```javascript
 import { useSessionStorageState } from "react-dynamic-hooks";
 
 const MyComponent = () => {
-    const theme = useSessionStorageState("theme", 'light'); //If theme not exist then set to light
+    const [theme, setTheme] = useSessionStorageState("theme", 'light'); //If theme not exist then set to light
 
     return (
         <>
